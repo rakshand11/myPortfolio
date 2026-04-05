@@ -7,50 +7,63 @@
     "contact": "Contact",
     "home": "Home",
     "resume": "Resume",
-    "resumeEnglish": "English",
-    "resumeJapanese": "Japanese"
+    "resumeEnglish": "English"
   },
+
   "home": {
     "scrollDown": "SCROLL DOWN",
-    "words": ["Engineer", "Designer", "Builder", "WebDev", "Commit", "Creative", "Crafting", "Focused"],
-    "tagline": "Turning ideas into thoughtful web experiences",
+    "words": [
+      "FullStack",
+      "Developer",
+      "ProblemSolver",
+      "Builder",
+      "Learner",
+      "Debugging",
+      "Scalable",
+      "CodeDriven"
+    ],
+    "tagline": "Building real-world web applications and continuously improving through hands-on development",
     "cta": "Let's connect",
-    "exploreCta": "Let's connect",
-    "role": "Front-End Engineer",
-    "subtitle": "Crafting fast, accessible web interfaces",
-    "location": "Based in Japan・Vue・Tailwind"
+    "exploreCta": "View my work",
+    "role": "Full Stack Developer",
+    "subtitle": "Focused on building scalable, responsive, and user-friendly applications",
+    "location": "Based in India ・ Open to Internship ・ Full Stack Developer"
   },
+
   "impact": {
-    "quote": "This portfolio is a snapshot of my problem-solving mindset, design decisions, and the way I turn ideas into reliable interfaces."
+    "quote": "This portfolio showcases my approach to problem-solving, building real-world applications, and continuously growing as a full stack developer."
   },
+
   "about": {
     "title": "About me",
-    "paragraph1": "I'm Aman, a web developer focused on crafting clear, modern interfaces that balance design and functionality.",
-    "paragraph2": "With a background in creative work, I approach development with both logic and visual intention, designing digital experiences that are built to grow and adapt."
+    "paragraph1": "I'm Rakshand, a full stack developer passionate about building scalable and user-friendly web applications.",
+    "paragraph2": "Currently seeking an internship, I enjoy working across both frontend and backend, turning ideas into real-world products while continuously improving my skills."
   },
+
   "skills": {
     "title": "Skills",
     "bgText": "SKILLS",
-    "taglineStatic": "I constantly try to",
-    "taglineWords": ["Improve", "Learn", "Adapt", "Grow"]
+    "taglineStatic": "I focus on",
+    "taglineWords": ["Building", "Learning", "Problem Solving", "Improving"]
   },
+
   "statement": {
-    "dividerText": "Each project shaped",
-    "dividerText2": "how I work today.",
-    "selected": "SELECTED",
-    "projects": "PROJECTS",
-    "showcase": "SHOWCASE"
+    "dividerText": "what i built",
+    "dividerText2": "so far",
+    "selected": "production",
+    "projects": "projects",
+    "showcase": "systems"
   },
   "contact": {
-    "title": "Conversation comes first",
-    "subtitle": "That's often where good things begin.",
-    "formTitle": "Open to opportunities",
+    "title": "Let's connect",
+    "subtitle": "I'm currently looking for internship opportunities and open to collaborations.",
+    "formTitle": "Get in touch",
     "nameLabel": "Name",
-    "namePlaceholder": "How should I call you?",
+    "namePlaceholder": "Your name",
     "emailLabel": "Email",
-    "emailPlaceholder": "Where can I reach you?",
+    "emailPlaceholder": "Your email address",
     "messageLabel": "Message",
-    "messagePlaceholder": "Anything you'd like to discuss?",
+    "messagePlaceholder": "Tell me about the opportunity or just say hi!",
     "errors": {
       "nameRequired": "Please enter your name",
       "emailInvalid": "Please enter a valid email address",
@@ -60,56 +73,58 @@
       "emailDomainTypo": "Did you mean {domain}?"
     },
     "requiredFieldMessage": "Please fill out this field.",
-    "send": "Send",
+    "send": "Send Message",
     "sendLoading": "Sending...",
-    "successTitle": "Thanks for getting in touch.",
-    "successMessage": "I've received your message and will follow up soon."
+    "successTitle": "Message sent successfully!",
+    "successMessage": "Thanks for reaching out. I'll get back to you soon."
   },
+
   "footer": {
     "github": "GITHUB",
     "linkedin": "LINKEDIN",
-    "inquiry": "INQUIRY",
-    "location": "TOKYO, JAPAN: (GMT+9)",
-    "tagline": "DESIGNING WITH CODE",
+    "inquiry": "CONTACT",
+    "location": "INDIA (GMT+5:30)",
+    "tagline": "BUILDING WITH CODE",
     "rights": "All Rights Reserved.",
-    "name": "AMAN"
+    "name": "RAKSHAND"
   },
+
   "projects": {
-    "jlptLab": "JLPT Practice Lab",
-    "jlptLabSubtitle": "Interactive JLPT practice platform built from real exam patterns to make learning clearer and less stressful."
+    "jlptLab": "JLPT Practice Platform",
+    "jlptLabSubtitle": "A structured learning platform designed to help users practice and understand concepts through real exam-based questions."
   },
+
   "projectDetail": {
     "back": "Back",
-    "status": "In Planning & Development",
-    "title": "JLPT Study Project",
+    "status": "In Development",
+    "title": "JLPT Study Platform",
     "sections": {
       "overview": {
         "title": "Project Overview",
-        "p1": "This project started from my own experience studying for and taking the JLPT N2.",
-        "p2": "While studying, I realized that memorizing grammar and kanji in isolation has its limits. No matter how much you memorize, without actually solving real JLPT questions, it's hard to see how grammar is used and how it's tested. There's so much you can only truly understand by encountering grammar within question passages and answer choices.",
-        "p3": "At the same time, going through full past exams every time isn't realistic either. With so many questions and the time they require, you can get exhausted before even starting to review. Especially when studying alongside work and daily life, long practice sessions can become stressful and lead to anxiety and tension.",
-        "p4": "These struggles inspired me to start this project."
+        "p1": "This project was inspired by my personal experience preparing for the JLPT N2 exam.",
+        "p2": "I realized that memorizing concepts alone is not enough — applying them through real questions builds true understanding.",
+        "p3": "However, solving full-length exams repeatedly can be overwhelming and time-consuming.",
+        "p4": "This led me to build a more focused and practical learning platform."
       },
       "coreIdea": {
         "title": "Core Concept",
-        "p1": "At the heart of this project is the idea of learning and deepening understanding through past JLPT questions.",
-        "p2": "Rather than repeatedly solving full exam papers, the goal is to break past questions into small, manageable practice units where each question can be reviewed carefully. For each question, the platform clearly explains which grammar pattern is being used, why the correct answer is correct, and why the other options are wrong. The emphasis is on naturally understanding grammar patterns through problem-solving, rather than relying on memorization."
+        "p1": "The platform breaks down real exam questions into small, manageable practice units.",
+        "p2": "Each question includes explanations to help users understand both correct and incorrect answers, focusing on learning through understanding."
       },
       "userFriendly": {
-        "title": "Designed with Usability in Mind",
-        "p1": "This project is designed based on my own struggles and difficulties during studying.",
-        "p2": "The layout is kept simple and easy to read, so learners can study calmly without unnecessary anxiety or stress. The aim is to create a comfortable learning experience where you can think, \"Let me just practice a little today,\" without feeling overwhelmed."
+        "title": "User-Focused Design",
+        "p1": "Designed with simplicity in mind, the platform reduces stress and makes learning more comfortable.",
+        "p2": "Users can practice at their own pace without feeling overwhelmed."
       },
       "status": {
-        "title": "Current Development Status",
-        "p1": "This project is currently in its early stages of development.",
-        "p2": "While planning the overall site structure and practice flow, UI design is being refined in Figma. The current focus is on building a solid, practical practice experience using past JLPT questions."
+        "title": "Current Status",
+        "p1": "The project is currently in development.",
+        "p2": "I'm focusing on improving UI/UX and building core features for a smooth user experience."
       },
       "purpose": {
-        "title": "Project Purpose",
-        "p1": "This project aims to help JLPT learners understand how questions are constructed and face the exam with confidence. Reducing anxiety, learning with understanding, and approaching the real test calmly. That's the goal of this practical review platform."
+        "title": "Purpose",
+        "p1": "The goal is to help learners build confidence, reduce anxiety, and understand how real exam questions work."
       }
     }
   }
 }
-

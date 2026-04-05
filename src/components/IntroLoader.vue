@@ -7,13 +7,17 @@
       <div ref="tile4" class="intro-tile"></div>
       <div ref="tile5" class="intro-tile"></div>
     </div>
-    <div class="intro-title" :class="{ 'is-ready': isTitleReady }" ref="titleEl">
+    <div
+      class="intro-title"
+      :class="{ 'is-ready': isTitleReady }"
+      ref="titleEl"
+    >
       <div class="title-row">
-        <div class="title-charts-cont"><span ref="seg1">A</span></div>
-        <div class="title-charts-cont"><span ref="seg2">MAN</span></div>
+        <div class="title-charts-cont"><span ref="seg1">RA</span></div>
+        <div class="title-charts-cont"><span ref="seg2">KSHAND</span></div>
         <div class="title-space">&nbsp;</div>
-        <div class="title-charts-cont"><span ref="seg3">R</span></div>
-        <div class="title-charts-cont"><span ref="seg4">AI</span></div>
+        <div class="title-charts-cont"><span ref="seg3">CH</span></div>
+        <div class="title-charts-cont"><span ref="seg4">HIKARA</span></div>
       </div>
     </div>
   </div>
@@ -70,16 +74,28 @@ const runTileTransition = () => {
   // Keep content reveal synchronized with the wipe so production chunk timing
   // does not create a visible pop/flicker behind the tiles.
   exitTimeline
-    .call(() => {
-      window.dispatchEvent(new CustomEvent("intro:reveal"));
-    }, null, 0.12)
-    .to(tiles, {
-      xPercent: -102,
-      duration: 0.7,
-      ease: "power3.inOut",
-      stagger: 0.1,
-    }, 0)
-    .to(titleEl.value, { opacity: 0, duration: 0.25, ease: "power2.out" }, 0.18);
+    .call(
+      () => {
+        window.dispatchEvent(new CustomEvent("intro:reveal"));
+      },
+      null,
+      0.12,
+    )
+    .to(
+      tiles,
+      {
+        xPercent: -102,
+        duration: 0.7,
+        ease: "power3.inOut",
+        stagger: 0.1,
+      },
+      0,
+    )
+    .to(
+      titleEl.value,
+      { opacity: 0, duration: 0.25, ease: "power2.out" },
+      0.18,
+    );
 };
 
 const runSlideAnimation = () => {
@@ -98,13 +114,13 @@ const runSlideAnimation = () => {
       seg1.value,
       { x: "2.5em" },
       { x: "0em", duration: slideDuration, ease: "power2.out" },
-      0
+      0,
     )
     .fromTo(
       seg4.value,
       { x: "-2em" },
       { x: "0em", duration: slideDuration, ease: "power2.out" },
-      0
+      0,
     )
 
     // Wave 2 — inner segments
@@ -112,13 +128,13 @@ const runSlideAnimation = () => {
       seg2.value,
       { x: "-3.5em" },
       { x: "0em", duration: slideDuration, ease: "power2.out" },
-      wave2Offset
+      wave2Offset,
     )
     .fromTo(
       seg3.value,
       { x: "2em" },
       { x: "0em", duration: slideDuration, ease: "power2.out" },
-      wave2Offset
+      wave2Offset,
     );
 };
 
@@ -166,7 +182,13 @@ onBeforeUnmount(() => {
   inset: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(45deg, rgba(194, 233, 221, 1) 1%, rgba(104, 119, 132, 1) 100%), linear-gradient(-45deg, #494d71 0%, rgba(217, 230, 185, 1) 80%);
+  background-image:
+    linear-gradient(
+      45deg,
+      rgba(194, 233, 221, 1) 1%,
+      rgba(104, 119, 132, 1) 100%
+    ),
+    linear-gradient(-45deg, #494d71 0%, rgba(217, 230, 185, 1) 80%);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

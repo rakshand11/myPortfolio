@@ -13,11 +13,13 @@
       <div class="contact-split relative z-20">
         <div class="contact-left">
           <div class="contact-left-content">
-            <h2 class="contact-title contact-title--stacked font-bold leading-tight tracking-tight">
-              <span class="contact-title-text">{{ t('contact.title') }}</span>
+            <h2
+              class="contact-title contact-title--stacked font-bold leading-tight tracking-tight"
+            >
+              <span class="contact-title-text">{{ t("contact.title") }}</span>
             </h2>
             <p class="contact-subtitle mt-6 max-w-xl">
-              {{ t('contact.subtitle') }}
+              {{ t("contact.subtitle") }}
             </p>
           </div>
         </div>
@@ -26,18 +28,23 @@
           <!-- Success State -->
           <div v-if="formSubmitted" class="contact-success-wrapper">
             <div ref="lottieContainer" class="contact-lottie"></div>
-            <h3 class="contact-success-title">{{ t('contact.successTitle') }}</h3>
+            <h3 class="contact-success-title">
+              {{ t("contact.successTitle") }}
+            </h3>
             <p v-if="isJa" class="contact-success-message">
-              {{ t('contact.successMessageLine1') }}<br class="ja-mobile-break" />{{ t('contact.successMessageLine2') }}
+              {{ t("contact.successMessageLine1")
+              }}<br class="ja-mobile-break" />{{
+                t("contact.successMessageLine2")
+              }}
             </p>
             <p v-else class="contact-success-message">
-              {{ t('contact.successMessage') }}
+              {{ t("contact.successMessage") }}
             </p>
           </div>
 
           <!-- Form State -->
           <div v-else class="contact-form-wrapper">
-            <h3 class="contact-form-title">{{ t('contact.formTitle') }}</h3>
+            <h3 class="contact-form-title">{{ t("contact.formTitle") }}</h3>
             <form
               ref="formRef"
               class="contact-form"
@@ -50,13 +57,19 @@
             >
               <input type="hidden" name="form-name" value="contact" />
               <!-- Honeypot fields for bot detection -->
-              <p style="display: none;">
+              <p style="display: none">
                 <label>Don't fill this out: <input name="bot-field" /></label>
               </p>
-              <input type="text" name="website" style="position: absolute; left: -9999px;" tabindex="-1" autocomplete="off" />
+              <input
+                type="text"
+                name="website"
+                style="position: absolute; left: -9999px"
+                tabindex="-1"
+                autocomplete="off"
+              />
               <input type="hidden" name="_gotcha" />
               <label class="contact-field">
-                <span class="contact-label">{{ t('contact.nameLabel') }}</span>
+                <span class="contact-label">{{ t("contact.nameLabel") }}</span>
                 <input
                   v-model.trim="formState.name"
                   class="contact-input"
@@ -71,13 +84,18 @@
                   @blur="handleBlur('name')"
                   @input="handleInput('name')"
                 />
-                <p v-if="errors.name" id="contact-name-error" class="contact-error" role="alert">
+                <p
+                  v-if="errors.name"
+                  id="contact-name-error"
+                  class="contact-error"
+                  role="alert"
+                >
                   <span class="contact-error-icon" aria-hidden="true">!</span>
                   <span>{{ errors.name }}</span>
                 </p>
               </label>
               <label class="contact-field">
-                <span class="contact-label">{{ t('contact.emailLabel') }}</span>
+                <span class="contact-label">{{ t("contact.emailLabel") }}</span>
                 <input
                   ref="emailInputRef"
                   v-model.trim="formState.email"
@@ -95,7 +113,12 @@
                   @input="handleInput('email')"
                   required
                 />
-                <p v-if="errors.email" id="contact-email-error" class="contact-error" role="alert">
+                <p
+                  v-if="errors.email"
+                  id="contact-email-error"
+                  class="contact-error"
+                  role="alert"
+                >
                   <span class="contact-error-icon" aria-hidden="true">!</span>
                   <span>{{ errors.email }}</span>
                 </p>
@@ -111,7 +134,9 @@
                 </p>
               </label>
               <label class="contact-field">
-                <span class="contact-label">{{ t('contact.messageLabel') }}</span>
+                <span class="contact-label">{{
+                  t("contact.messageLabel")
+                }}</span>
                 <textarea
                   v-model.trim="formState.message"
                   class="contact-input"
@@ -125,26 +150,44 @@
                   @blur="handleBlur('message')"
                   @input="handleInput('message')"
                 ></textarea>
-                <p v-if="errors.message" id="contact-message-error" class="contact-error" role="alert">
+                <p
+                  v-if="errors.message"
+                  id="contact-message-error"
+                  class="contact-error"
+                  role="alert"
+                >
                   <span class="contact-error-icon" aria-hidden="true">!</span>
                   <span>{{ errors.message }}</span>
                 </p>
               </label>
-              <button class="contact-submit" type="submit" :disabled="isSubmitting">
-                {{ isSubmitting ? t('contact.sendLoading') : t('contact.send') }}
+              <button
+                class="contact-submit"
+                type="submit"
+                :disabled="isSubmitting"
+              >
+                {{
+                  isSubmitting ? t("contact.sendLoading") : t("contact.send")
+                }}
               </button>
             </form>
           </div>
         </div>
       </div>
-  </section>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, onBeforeUnmount, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import contactBgImage from '@/assets/contact-bg.jpg';
+import {
+  computed,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  ref,
+  watch,
+} from "vue";
+import { useI18n } from "vue-i18n";
+import contactBgImage from "@/assets/contact-bg.jpg";
 
 const contactWrapper = ref(null);
 const contactSection = ref(null);
@@ -153,12 +196,12 @@ const formRef = ref(null);
 const emailInputRef = ref(null);
 const { t, locale } = useI18n();
 let successLottieAnim = null;
-const isJa = computed(() => locale.value === 'ja');
+const isJa = computed(() => locale.value === "ja");
 
 const formState = ref({
-  name: '',
-  email: '',
-  message: '',
+  name: "",
+  email: "",
+  message: "",
 });
 
 const touched = ref({
@@ -168,11 +211,11 @@ const touched = ref({
 });
 
 const errors = ref({
-  name: '',
-  email: '',
-  message: '',
+  name: "",
+  email: "",
+  message: "",
 });
-const emailWarning = ref('');
+const emailWarning = ref("");
 
 const isSubmitting = ref(false);
 const formSubmitted = ref(false);
@@ -189,9 +232,9 @@ let wasWrapperVisible = false;
 
 const resetForm = () => {
   formState.value = {
-    name: '',
-    email: '',
-    message: '',
+    name: "",
+    email: "",
+    message: "",
   };
   touched.value = {
     name: false,
@@ -199,60 +242,60 @@ const resetForm = () => {
     message: false,
   };
   errors.value = {
-    name: '',
-    email: '',
-    message: '',
+    name: "",
+    email: "",
+    message: "",
   };
-  emailWarning.value = '';
+  emailWarning.value = "";
 };
 
 const practicalEmailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/u;
 const trustedEmailDomains = [
-  'gmail.com',
-  'outlook.com',
-  'hotmail.com',
-  'yahoo.com',
-  'icloud.com',
-  'proton.me',
-  'protonmail.com',
-  'zoho.com',
-  'mail.com',
-  'fastmail.com',
-  'yahoo.co.jp',
-  'docomo.ne.jp',
-  'ezweb.ne.jp',
-  'au.com',
-  'softbank.ne.jp',
-  'i.softbank.jp',
-  'ymobile.ne.jp',
-  'ymobile.jp',
+  "gmail.com",
+  "outlook.com",
+  "hotmail.com",
+  "yahoo.com",
+  "icloud.com",
+  "proton.me",
+  "protonmail.com",
+  "zoho.com",
+  "mail.com",
+  "fastmail.com",
+  "yahoo.co.jp",
+  "docomo.ne.jp",
+  "ezweb.ne.jp",
+  "au.com",
+  "softbank.ne.jp",
+  "i.softbank.jp",
+  "ymobile.ne.jp",
+  "ymobile.jp",
 ];
 const domainTypoMap = {
-  'gamil.com': 'gmail.com',
-  'gnail.com': 'gmail.com',
-  'gmai.com': 'gmail.com',
-  'gmial.com': 'gmail.com',
-  'gmail.co': 'gmail.com',
-  'gmail.con': 'gmail.com',
-  'outlok.com': 'outlook.com',
-  'outllok.com': 'outlook.com',
-  'outlook.co': 'outlook.com',
-  'hotnail.com': 'hotmail.com',
-  'hotmial.com': 'hotmail.com',
-  'yaho.com': 'yahoo.com',
-  'yahho.com': 'yahoo.com',
-  'yhoo.com': 'yahoo.com',
-  'yahoo.coj.jp': 'yahoo.co.jp',
-  'docomo.ne,jp': 'docomo.ne.jp',
-  'ezweb.ne,jp': 'ezweb.ne.jp',
-  'softbank.ne,jp': 'softbank.ne.jp',
-  'ymobile.ne,jp': 'ymobile.ne.jp',
+  "gamil.com": "gmail.com",
+  "gnail.com": "gmail.com",
+  "gmai.com": "gmail.com",
+  "gmial.com": "gmail.com",
+  "gmail.co": "gmail.com",
+  "gmail.con": "gmail.com",
+  "outlok.com": "outlook.com",
+  "outllok.com": "outlook.com",
+  "outlook.co": "outlook.com",
+  "hotnail.com": "hotmail.com",
+  "hotmial.com": "hotmail.com",
+  "yaho.com": "yahoo.com",
+  "yahho.com": "yahoo.com",
+  "yhoo.com": "yahoo.com",
+  "yahoo.coj.jp": "yahoo.co.jp",
+  "docomo.ne,jp": "docomo.ne.jp",
+  "ezweb.ne,jp": "ezweb.ne.jp",
+  "softbank.ne,jp": "softbank.ne.jp",
+  "ymobile.ne,jp": "ymobile.ne.jp",
 };
 
 const getEmailParts = (email) => {
-  const atIndex = email.lastIndexOf('@');
+  const atIndex = email.lastIndexOf("@");
   if (atIndex <= 0 || atIndex >= email.length - 1) {
-    return { localPart: '', domain: '' };
+    return { localPart: "", domain: "" };
   }
   return {
     localPart: email.slice(0, atIndex),
@@ -273,11 +316,7 @@ const levenshteinDistance = (a, b) => {
     curr[0] = i;
     for (let j = 1; j <= b.length; j += 1) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      curr[j] = Math.min(
-        prev[j] + 1,
-        curr[j - 1] + 1,
-        prev[j - 1] + cost
-      );
+      curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
     }
     for (let j = 0; j <= b.length; j += 1) prev[j] = curr[j];
   }
@@ -286,16 +325,16 @@ const levenshteinDistance = (a, b) => {
 };
 
 const getSuggestedDomain = (domain) => {
-  if (!domain) return '';
-  if (trustedEmailDomains.includes(domain)) return '';
+  if (!domain) return "";
+  if (trustedEmailDomains.includes(domain)) return "";
   if (domainTypoMap[domain]) return domainTypoMap[domain];
 
-  const domainLabels = domain.split('.').length;
-  let bestDomain = '';
+  const domainLabels = domain.split(".").length;
+  let bestDomain = "";
   let bestDistance = Number.POSITIVE_INFINITY;
 
   for (const candidate of trustedEmailDomains) {
-    const candidateLabels = candidate.split('.').length;
+    const candidateLabels = candidate.split(".").length;
     if (Math.abs(candidateLabels - domainLabels) > 1) continue;
 
     const distance = levenshteinDistance(domain, candidate);
@@ -305,71 +344,78 @@ const getSuggestedDomain = (domain) => {
     }
   }
 
-  if (!bestDomain) return '';
+  if (!bestDomain) return "";
 
   const maxLength = Math.max(domain.length, bestDomain.length);
   const normalized = bestDistance / maxLength;
   if (bestDistance <= 2 && normalized <= 0.25) return bestDomain;
 
-  return '';
+  return "";
 };
 
 const updateEmailWarning = () => {
   const email = formState.value.email;
   if (!email) {
-    emailWarning.value = '';
+    emailWarning.value = "";
     return;
   }
 
   const emailEl = emailInputRef.value;
-  if (!emailEl || emailEl.validity.valueMissing || emailEl.validity.typeMismatch || !practicalEmailPattern.test(email)) {
-    emailWarning.value = '';
+  if (
+    !emailEl ||
+    emailEl.validity.valueMissing ||
+    emailEl.validity.typeMismatch ||
+    !practicalEmailPattern.test(email)
+  ) {
+    emailWarning.value = "";
     return;
   }
 
   const { domain } = getEmailParts(email);
   const suggestedDomain = getSuggestedDomain(domain);
   emailWarning.value = suggestedDomain
-    ? t('contact.warnings.emailDomainTypo', { domain: suggestedDomain })
-    : '';
+    ? t("contact.warnings.emailDomainTypo", { domain: suggestedDomain })
+    : "";
 };
 
 const getFieldError = (field) => {
   const value = formState.value[field];
 
-  if (field === 'name' && !value) {
-    return t('contact.errors.nameRequired');
+  if (field === "name" && !value) {
+    return t("contact.errors.nameRequired");
   }
 
-  if (field === 'email') {
+  if (field === "email") {
     const emailEl = emailInputRef.value;
     if (!emailEl) {
-      return !value || !practicalEmailPattern.test(value) ? t('contact.errors.emailInvalid') : '';
+      return !value || !practicalEmailPattern.test(value)
+        ? t("contact.errors.emailInvalid")
+        : "";
     }
 
     // Level 1: HTML5 checks from `type="email"` + `required`.
     if (emailEl.validity.valueMissing || emailEl.validity.typeMismatch) {
-      return t('contact.errors.emailInvalid');
+      return t("contact.errors.emailInvalid");
     }
 
     // Level 2: practical JS check for obvious structural issues.
     if (!practicalEmailPattern.test(value)) {
-      return t('contact.errors.emailInvalid');
+      return t("contact.errors.emailInvalid");
     }
   }
 
-  if (field === 'message' && !value) {
-    return t('contact.errors.messageRequired');
+  if (field === "message" && !value) {
+    return t("contact.errors.messageRequired");
   }
 
-  return '';
+  return "";
 };
 
 const validateField = (field) => {
   errors.value[field] = getFieldError(field);
-  if (field === 'email') {
+  if (field === "email") {
     if (errors.value.email) {
-      emailWarning.value = '';
+      emailWarning.value = "";
     } else {
       updateEmailWarning();
     }
@@ -378,7 +424,7 @@ const validateField = (field) => {
 };
 
 const validateForm = () => {
-  const fields = ['name', 'email', 'message'];
+  const fields = ["name", "email", "message"];
   let isValid = true;
   for (const field of fields) {
     touched.value[field] = true;
@@ -398,7 +444,7 @@ const handleBlur = (field) => {
 };
 
 const handleInput = (field) => {
-  if (field === 'email') {
+  if (field === "email") {
     // Warning is non-blocking and should clear/update as the user types.
     updateEmailWarning();
   }
@@ -430,20 +476,22 @@ const handleSubmit = async () => {
 
   // Rate limiting - minimum 10 seconds between submissions
   if (now - lastSubmitTime < 10000 && lastSubmitTime > 0) {
-    alert('Please wait before submitting again.');
+    alert("Please wait before submitting again.");
     return;
   }
 
   // Timing check - reject if submitted too fast (< 3 seconds)
   if (now - formLoadTime.value < 3000) {
-    alert('Please take your time filling out the form.');
+    alert("Please take your time filling out the form.");
     formLoadTime.value = Date.now();
     return;
   }
 
   // Spam pattern detection
   if (containsSpamPatterns(name) || containsSpamPatterns(message)) {
-    alert('Your message could not be sent. Please remove any suspicious content.');
+    alert(
+      "Your message could not be sent. Please remove any suspicious content.",
+    );
     return;
   }
 
@@ -454,28 +502,32 @@ const handleSubmit = async () => {
   if (websiteField?.value || gotchaField?.value) {
     // Silent fail for bots
     resetForm();
-    alert('Thank you for your message!');
+    alert("Thank you for your message!");
     return;
   }
 
   isSubmitting.value = true;
 
   const formData = new URLSearchParams();
-  formData.append('form-name', 'contact');
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('message', message);
+  formData.append("form-name", "contact");
+  formData.append("name", name);
+  formData.append("email", email);
+  formData.append("message", message);
 
   try {
-    const response = await fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    const response = await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData.toString(),
     });
 
     if (!response.ok) {
-      console.error('Form submission failed:', response.status, response.statusText);
-      throw new Error('Submission failed');
+      console.error(
+        "Form submission failed:",
+        response.status,
+        response.statusText,
+      );
+      throw new Error("Submission failed");
     }
 
     lastSubmitTime = Date.now();
@@ -484,8 +536,8 @@ const handleSubmit = async () => {
 
     // Preload Lottie animation before showing success state
     const [{ default: lottie }, workAnimModule] = await Promise.all([
-      import('lottie-web'),
-      import('@/assets/lottie/work.json'),
+      import("lottie-web"),
+      import("@/assets/lottie/work.json"),
     ]);
     const workAnimData = workAnimModule.default ?? workAnimModule;
 
@@ -497,15 +549,15 @@ const handleSubmit = async () => {
     if (lottieContainer.value) {
       successLottieAnim = lottie.loadAnimation({
         container: lottieContainer.value,
-        renderer: 'svg',
+        renderer: "svg",
         loop: true,
         autoplay: true,
         animationData: workAnimData,
       });
     }
   } catch (error) {
-    console.error('Form error:', error);
-    alert('There was an error sending your message. Please try again.');
+    console.error("Form error:", error);
+    alert("There was an error sending your message. Please try again.");
   } finally {
     isSubmitting.value = false;
   }
@@ -515,8 +567,8 @@ onMounted(async () => {
   const currentMount = ++mountToken;
 
   const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
-    import('gsap'),
-    import('gsap/ScrollTrigger'),
+    import("gsap"),
+    import("gsap/ScrollTrigger"),
   ]);
   if (currentMount !== mountToken) return;
   gsap.registerPlugin(ScrollTrigger);
@@ -525,13 +577,13 @@ onMounted(async () => {
   const sectionEl = contactSection.value;
   if (!wrapperEl || !sectionEl) return;
 
-  document.documentElement.style.scrollBehavior = 'auto';
-  const isMobileLayout = window.matchMedia('(max-width: 768px)').matches;
+  document.documentElement.style.scrollBehavior = "auto";
+  const isMobileLayout = window.matchMedia("(max-width: 768px)").matches;
 
   if (isMobileLayout) {
     // On small screens locale/menu toggles can leave this class stale until scroll.
     // Keep the section visible and skip the desktop offscreen observer behavior.
-    sectionEl.classList.remove('is-offscreen');
+    sectionEl.classList.remove("is-offscreen");
     isWrapperVisible = true;
     wasWrapperVisible = true;
   } else {
@@ -539,20 +591,25 @@ onMounted(async () => {
       (entries) => {
         const isVisible = entries.some((entry) => entry.isIntersecting);
         isWrapperVisible = isVisible;
-        sectionEl.classList.toggle('is-offscreen', !isVisible);
+        sectionEl.classList.toggle("is-offscreen", !isVisible);
         wasWrapperVisible = isVisible;
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     wrapperObserver.observe(wrapperEl);
   }
 
-  const createScrollTrigger = (initialClip, triggerStart, triggerEnd = 'bottom bottom') => {
-    revealTween = gsap.fromTo(sectionEl,
+  const createScrollTrigger = (
+    initialClip,
+    triggerStart,
+    triggerEnd = "bottom bottom",
+  ) => {
+    revealTween = gsap.fromTo(
+      sectionEl,
       { clipPath: `inset(${initialClip}% 0 0 0)` },
       {
-        clipPath: 'inset(0% 0 0 0)',
-        ease: 'none',
+        clipPath: "inset(0% 0 0 0)",
+        ease: "none",
         scrollTrigger: {
           trigger: wrapperEl,
           start: triggerStart,
@@ -560,7 +617,7 @@ onMounted(async () => {
           scrub: true,
           invalidateOnRefresh: true,
         },
-      }
+      },
     );
 
     return () => {
@@ -572,16 +629,16 @@ onMounted(async () => {
   };
 
   const createExitScroll = () => {
-    const footerEl = document.querySelector('.footer-wrapper');
+    const footerEl = document.querySelector(".footer-wrapper");
     if (!footerEl) return () => {};
     gsap.set(sectionEl, { yPercent: 0 });
     exitTween = gsap.to(sectionEl, {
       yPercent: -100,
-      ease: 'none',
+      ease: "none",
       scrollTrigger: {
         trigger: footerEl,
-        start: 'top bottom',
-        end: 'top top',
+        start: "top bottom",
+        end: "top top",
         scrub: true,
         invalidateOnRefresh: true,
       },
@@ -598,11 +655,15 @@ onMounted(async () => {
 
   if (isMobileLayout) {
     // Keep mobile stable: avoid clip-path scrub that can stick after locale toggle.
-    gsap.set(sectionEl, { clipPath: 'inset(0% 0 0 0)' });
+    gsap.set(sectionEl, { clipPath: "inset(0% 0 0 0)" });
   } else {
     mediaMatch = ScrollTrigger.matchMedia();
-    mediaMatch.add('(min-width: 769px)', () => {
-      const killReveal = createScrollTrigger(100, 'top bottom', () => `top+=${window.innerHeight}px bottom`);
+    mediaMatch.add("(min-width: 769px)", () => {
+      const killReveal = createScrollTrigger(
+        100,
+        "top bottom",
+        () => `top+=${window.innerHeight}px bottom`,
+      );
       const killExit = createExitScroll();
 
       return () => {
@@ -618,15 +679,15 @@ onMounted(async () => {
 });
 
 watch(locale, async () => {
-  if (!window.matchMedia('(max-width: 768px)').matches) return;
+  if (!window.matchMedia("(max-width: 768px)").matches) return;
   const sectionEl = contactSection.value;
   if (!sectionEl) return;
 
   await nextTick();
-  sectionEl.classList.remove('is-offscreen');
-  sectionEl.style.removeProperty('clip-path');
-  sectionEl.style.removeProperty('-webkit-clip-path');
-  sectionEl.style.removeProperty('transform');
+  sectionEl.classList.remove("is-offscreen");
+  sectionEl.style.removeProperty("clip-path");
+  sectionEl.style.removeProperty("-webkit-clip-path");
+  sectionEl.style.removeProperty("transform");
 });
 
 onBeforeUnmount(() => {
@@ -656,7 +717,7 @@ onBeforeUnmount(() => {
 
   isWrapperVisible = false;
   wasWrapperVisible = false;
-  document.documentElement.style.scrollBehavior = '';
+  document.documentElement.style.scrollBehavior = "";
 });
 </script>
 
@@ -674,7 +735,8 @@ onBeforeUnmount(() => {
   bottom: 0;
   will-change: transform;
   contain: layout paint;
-  background: radial-gradient(
+  background:
+    radial-gradient(
       120% 120% at 10% 0%,
       rgba(36, 38, 56, 0.6),
       rgba(12, 12, 16, 0.95)
@@ -925,20 +987,27 @@ onBeforeUnmount(() => {
   transition: 500ms;
   border-radius: 5px;
   background: linear-gradient(145deg, #2e2d2d, #212121);
-  box-shadow: -1px -5px 15px #41465b, 5px 5px 15px #41465b,
-    inset 5px 5px 10px #212121, inset -5px -5px 10px #212121;
+  box-shadow:
+    -1px -5px 15px #41465b,
+    5px 5px 15px #41465b,
+    inset 5px 5px 10px #212121,
+    inset -5px -5px 10px #212121;
   display: inline-flex;
   justify-content: center;
 }
 
 .contact-submit:hover {
-  box-shadow: 1px 1px 13px #20232e, -1px -1px 13px #545b78;
+  box-shadow:
+    1px 1px 13px #20232e,
+    -1px -1px 13px #545b78;
   color: #d6d6d6;
   transition: 500ms;
 }
 
 .contact-submit:active {
-  box-shadow: 1px 1px 13px #20232e, -1px -1px 33px #545b78;
+  box-shadow:
+    1px 1px 13px #20232e,
+    -1px -1px 33px #545b78;
   color: #d6d6d6;
   transition: 100ms;
 }
@@ -953,15 +1022,21 @@ onBeforeUnmount(() => {
 :global([data-theme="light"] .contact-submit) {
   color: #1f2a37;
   border-color: rgba(31, 42, 55, 0.22);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(236, 242, 250, 0.92));
-  box-shadow: -2px -2px 12px rgba(255, 255, 255, 0.85),
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(236, 242, 250, 0.92)
+  );
+  box-shadow:
+    -2px -2px 12px rgba(255, 255, 255, 0.85),
     3px 3px 12px rgba(24, 150, 158, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 :global([data-theme="light"] .contact-submit:hover) {
   color: #13202c;
-  box-shadow: -1px -1px 8px rgba(255, 255, 255, 0.9),
+  box-shadow:
+    -1px -1px 8px rgba(255, 255, 255, 0.9),
     2px 2px 10px rgba(24, 150, 158, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
@@ -969,8 +1044,13 @@ onBeforeUnmount(() => {
 :global([data-theme="light"] .contact-submit:active) {
   color: #0f172a;
   border-color: rgba(15, 23, 42, 0.35);
-  background: linear-gradient(135deg, rgba(226, 244, 246, 0.95), rgba(210, 232, 236, 0.95));
-  box-shadow: -1px -1px 6px rgba(255, 255, 255, 0.75),
+  background: linear-gradient(
+    135deg,
+    rgba(226, 244, 246, 0.95),
+    rgba(210, 232, 236, 0.95)
+  );
+  box-shadow:
+    -1px -1px 6px rgba(255, 255, 255, 0.75),
     1px 1px 8px rgba(24, 150, 158, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
     inset 2px 2px 6px rgba(12, 74, 110, 0.18);

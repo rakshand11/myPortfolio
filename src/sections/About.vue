@@ -18,7 +18,10 @@
             <div
               ref="imageFrame"
               class="about-image-frame absolute top-0 left-0 sm:top-[16px] sm:left-[18px] z-[2] h-full w-full overflow-hidden rounded-[24px] shadow-[0_22px_60px_rgba(0,0,0,0.35),0_0_24px_color-mix(in_srgb,var(--theme-cta-bg)_35%,transparent)]"
-              :class="[imageVisible ? 'is-visible' : '', showEffects ? 'show-effects' : '']"
+              :class="[
+                imageVisible ? 'is-visible' : '',
+                showEffects ? 'show-effects' : '',
+              ]"
             >
               <img
                 :src="profileImage"
@@ -43,14 +46,20 @@
             class="about-reveal-grid absolute -inset-2.5 z-[2] grid grid-cols-12 [grid-auto-rows:1fr] gap-2.5 pointer-events-none"
             aria-hidden="true"
           ></div>
-          <h2 class="relative z-[1] text-[clamp(2rem,3vw,3.2rem)] font-extrabold uppercase tracking-[0.08em] text-[var(--theme-text-strong)]">
-            {{ t('about.title') }}
+          <h2
+            class="relative z-[1] text-[clamp(2rem,3vw,3.2rem)] font-extrabold uppercase tracking-[0.08em] text-[var(--theme-text-strong)]"
+          >
+            {{ t("about.title") }}
           </h2>
-          <p class="relative z-[1] mt-6 text-lg font-medium leading-[2.2] text-[var(--theme-text-muted)] md:text-xl">
-            {{ t('about.paragraph1') }}
+          <p
+            class="relative z-[1] mt-6 text-lg font-medium leading-[2.2] text-[var(--theme-text-muted)] md:text-xl"
+          >
+            {{ t("about.paragraph1") }}
           </p>
-          <p class="relative z-[1] mt-6 text-lg font-medium leading-[2.2] text-[var(--theme-text-muted)] md:text-xl">
-            {{ t('about.paragraph2') }}
+          <p
+            class="relative z-[1] mt-6 text-lg font-medium leading-[2.2] text-[var(--theme-text-muted)] md:text-xl"
+          >
+            {{ t("about.paragraph2") }}
           </p>
         </div>
       </div>
@@ -59,10 +68,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import profileImage from '@/assets/profile.jpg';
-import profileImageSmall from '@/assets/profile-1280.jpg';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
+import profileImage from "@/assets/rakshand.jpeg";
+import profileImageSmall from "@/assets/rakshand.jpeg";
 
 const { t } = useI18n();
 
@@ -82,16 +91,18 @@ let textRevealStarted = false;
 
 const getRevealTargets = () => {
   if (!aboutText.value) return [];
-  return Array.from(aboutText.value.querySelectorAll(':scope > :not(.about-reveal-grid)'));
+  return Array.from(
+    aboutText.value.querySelectorAll(":scope > :not(.about-reveal-grid)"),
+  );
 };
 
 onMounted(async () => {
-  const { default: gsap } = await import('gsap');
+  const { default: gsap } = await import("gsap");
   if (revealGrid.value) {
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < 200; i += 1) {
-      const box = document.createElement('div');
-      box.className = 'about-reveal-box';
+      const box = document.createElement("div");
+      box.className = "about-reveal-box";
       fragment.appendChild(box);
     }
     revealGrid.value.appendChild(fragment);
@@ -99,7 +110,7 @@ onMounted(async () => {
 
   const revealTargets = getRevealTargets();
   if (revealTargets.length) {
-    gsap.set(revealTargets, { opacity: 0, y: 14, filter: 'blur(6px)' });
+    gsap.set(revealTargets, { opacity: 0, y: 14, filter: "blur(6px)" });
   }
 
   if (aboutSection.value) {
@@ -109,14 +120,14 @@ onMounted(async () => {
           if (!entry.isIntersecting || textRevealStarted) return;
           textRevealStarted = true;
           const boxes = revealGrid.value
-            ? revealGrid.value.querySelectorAll('.about-reveal-box')
+            ? revealGrid.value.querySelectorAll(".about-reveal-box")
             : [];
           revealTimeline = gsap.timeline({
             onComplete: () => {
               if (revealGrid.value) {
-                gsap.set(revealGrid.value, { opacity: 0, display: 'none' });
+                gsap.set(revealGrid.value, { opacity: 0, display: "none" });
               }
-            }
+            },
           });
           if (boxes.length) {
             revealTimeline.to(
@@ -125,10 +136,10 @@ onMounted(async () => {
                 opacity: 0,
                 scale: 0.2,
                 duration: 0.9,
-                ease: 'power3.out',
-                stagger: { amount: 1.2, from: 'random' }
+                ease: "power3.out",
+                stagger: { amount: 1.2, from: "random" },
               },
-              0
+              0,
             );
           }
           if (revealTargets.length) {
@@ -137,12 +148,12 @@ onMounted(async () => {
               {
                 opacity: 1,
                 y: 0,
-                filter: 'blur(0px)',
+                filter: "blur(0px)",
                 duration: 0.8,
-                ease: 'power3.out',
-                stagger: 0.08
+                ease: "power3.out",
+                stagger: 0.08,
               },
-              0.2
+              0.2,
             );
           }
           if (textRevealObserver) {
@@ -151,7 +162,7 @@ onMounted(async () => {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     );
     textRevealObserver.observe(aboutSection.value);
   }
@@ -161,7 +172,11 @@ onMounted(async () => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
 
-        if (entry.target === imageFrame.value && !imageVisible.value && !imageRevealQueued) {
+        if (
+          entry.target === imageFrame.value &&
+          !imageVisible.value &&
+          !imageRevealQueued
+        ) {
           imageRevealQueued = true;
           requestAnimationFrame(() => {
             imageVisible.value = true;
@@ -180,7 +195,7 @@ onMounted(async () => {
         }
       });
     },
-    { threshold: 0.1 }
+    { threshold: 0.1 },
   );
 
   if (imageFrame.value) observer.observe(imageFrame.value);
@@ -205,8 +220,21 @@ onUnmounted(() => {
 
 <style scoped>
 .about-reveal-box {
-  background: color-mix(in srgb, var(--theme-text-strong) 72%, var(--theme-bg) 28%);
-  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+  background: color-mix(
+    in srgb,
+    var(--theme-text-strong) 72%,
+    var(--theme-bg) 28%
+  );
+  clip-path: polygon(
+    30% 0,
+    70% 0,
+    100% 30%,
+    100% 70%,
+    70% 100%,
+    30% 100%,
+    0 70%,
+    0 30%
+  );
   transform: scale(1);
   opacity: 1;
 }
@@ -219,14 +247,18 @@ onUnmounted(() => {
 
 .about-bg.is-visible {
   opacity: 0.985;
-  transition: opacity 0.6s ease 1.8s, box-shadow 0s linear 1.8s;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25),
+  transition:
+    opacity 0.6s ease 1.8s,
+    box-shadow 0s linear 1.8s;
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.25),
     0 0 20px color-mix(in srgb, var(--theme-cta-bg) 30%, transparent) !important;
 }
 
 :global([data-theme="dark"] .about-bg.is-visible) {
   filter: brightness(1.08) saturate(1.08);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.3),
     0 0 34px color-mix(in srgb, var(--theme-cta-bg) 45%, transparent) !important;
 }
 
@@ -246,7 +278,7 @@ onUnmounted(() => {
 
 .about-image-frame::before,
 .about-image-frame::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -277,7 +309,8 @@ onUnmounted(() => {
 
 .about-image-frame.show-effects {
   transition: box-shadow 0s linear 0s;
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35),
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.35),
     0 0 24px color-mix(in srgb, var(--theme-cta-bg) 35%, transparent) !important;
 }
 
@@ -328,7 +361,9 @@ onUnmounted(() => {
   transition: opacity 0.6s ease 1.8s !important;
 }
 
-:global(:root.theme-switching[data-theme="light"] .about-image-frame.show-effects) {
+:global(
+  :root.theme-switching[data-theme="light"] .about-image-frame.show-effects
+) {
   transition: none !important;
 }
 
@@ -372,6 +407,3 @@ onUnmounted(() => {
   }
 }
 </style>
-
-
-

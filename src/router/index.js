@@ -44,10 +44,14 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
     const hashTarget = to.hash && to.hash.length > 1 ? to.hash : null;
-    const section = Array.isArray(to.query.section) ? to.query.section[0] : to.query.section;
+    const section = Array.isArray(to.query.section)
+      ? to.query.section[0]
+      : to.query.section;
     const target = hashTarget || (section ? `#${section}` : null);
     if (target) {
-      return scrollToTarget(target).then((didScroll) => (didScroll ? false : false));
+      return scrollToTarget(target).then((didScroll) =>
+        didScroll ? false : false,
+      );
     }
 
     // On page reload (initial navigation has no from.name), skip scrolling here.
@@ -61,7 +65,9 @@ const router = createRouter({
 
 router.afterEach((to) => {
   const hashTarget = to.hash && to.hash.length > 1 ? to.hash : null;
-  const section = Array.isArray(to.query.section) ? to.query.section[0] : to.query.section;
+  const section = Array.isArray(to.query.section)
+    ? to.query.section[0]
+    : to.query.section;
   const target = hashTarget || (section ? `#${section}` : null);
   if (!target) return;
   // Extra guard in case the view renders late or a transition delays layout.

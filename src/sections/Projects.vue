@@ -4,31 +4,44 @@
     ref="projectsSection"
     class="projects-section relative max-w-300 mx-auto py-8 pb-20 mb-24 md:mb-32 px-[clamp(1rem,5vw,4rem)]"
   >
+    <!-- Floating image preview (desktop only) -->
     <div
       ref="imagePreview"
-      class="project-image-preview absolute w-80 h-65 rounded-lg overflow-hidden opacity-0 pointer-events-none z-100"
+      class="project-image-preview absolute pointer-events-none z-100"
       :class="{ 'is-visible': hoveredIndex !== null }"
     >
-      <img
-        v-for="(project, index) in projects"
-        :key="project.id"
-        :src="project.image"
-        :alt="project.title"
-        class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-400"
-        :class="{ 'is-active': hoveredIndex === index }"
-        :width="project.width"
-        :height="project.height"
-        loading="lazy"
-        decoding="async"
-      />
+      <div class="preview-inner">
+        <img
+          v-for="(project, index) in projects"
+          :key="project.id"
+          :src="project.image"
+          :alt="project.title"
+          class="preview-img absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-300"
+          :class="{ 'is-active': hoveredIndex === index }"
+          loading="lazy"
+          decoding="async"
+        />
+        <!-- Browser chrome overlay for screenshot feel -->
+        <div class="browser-chrome">
+          <div class="chrome-dots"><span></span><span></span><span></span></div>
+        </div>
+      </div>
     </div>
 
-    <div class="flex flex-col" @mousemove="handleListMouseMove" @mouseleave="handleListLeave">
+    <!-- Project list -->
+    <div
+      class="flex flex-col"
+      @mousemove="handleListMouseMove"
+      @mouseleave="handleListLeave"
+    >
       <article
         v-for="(project, index) in projects"
         :key="project.id"
         class="project-item flex items-start gap-[0.2rem] pb-[0.2em] -mt-[2.2rem] -mb-[0.2em] border-b border-(--project-border-color) relative overflow-visible cursor-pointer"
-        :class="{ 'project-item-first': index === 0, 'is-hovered': hoveredIndex === index }"
+        :class="{
+          'project-item-first': index === 0,
+          'is-hovered': hoveredIndex === index,
+        }"
         ref="projectItems"
         role="link"
         tabindex="0"
@@ -37,29 +50,56 @@
         @keydown.space.prevent="goToProject(project)"
       >
         <div class="flex-1 mt-0">
-          <div class="project-mobile-image hidden w-full rounded-[10px] overflow-hidden mb-5 bg-(--project-image-overlay)" aria-hidden="true">
+          <!-- Mobile image -->
+          <div
+            class="project-mobile-image hidden w-full rounded-[10px] overflow-hidden mb-5 bg-(--project-image-overlay)"
+            aria-hidden="true"
+          >
             <img
               :src="project.imageMobile"
               :alt="project.title"
-              class="block w-full h-auto object-cover"
-              :width="project.width"
-              :height="project.height"
+              class="block w-full h-auto object-cover object-top"
               loading="lazy"
               decoding="async"
             />
           </div>
-          <h3 class="project-title inline-block m-0 font-bold leading-[1.05] tracking-tight cursor-pointer text-(--project-title-color)">
+
+          <h3
+            class="project-title inline-block m-0 font-bold leading-[1.05] tracking-tight cursor-pointer text-(--project-title-color)"
+          >
             <span class="inline-flex items-center gap-0">
-              <span class="project-index-mobile font-medium text-(--theme-text-muted) leading-none">_{{ String(index + 1).padStart(2, '0') }}.</span>
-              <span class="project-index font-medium text-(--theme-text-muted) leading-none">_{{ String(index + 1).padStart(2, '0') }}.</span>
-              <span class="project-title-text inline-block shrink-0 w-fit relative pb-[0.22em] text-(--project-title-color)">
-                <span class="project-title-base inline-block pb-[0.15em]">{{ project.title }}</span>
-                <span ref="titleAnimEls" class="project-title-anim absolute top-0 left-0 w-full inline-block pb-[0.22em] pointer-events-none" aria-hidden="true">{{ project.title }}</span>
+              <span
+                class="project-index-mobile font-medium text-(--theme-text-muted) leading-none"
+                >_{{ String(index + 1).padStart(2, "0") }}.</span
+              >
+              <span
+                class="project-index font-medium text-(--theme-text-muted) leading-none"
+                >_{{ String(index + 1).padStart(2, "0") }}.</span
+              >
+              <span
+                class="project-title-text inline-block shrink-0 w-fit relative pb-[0.22em] text-(--project-title-color)"
+              >
+                <span class="project-title-base inline-block pb-[0.15em]">{{
+                  project.title
+                }}</span>
+                <span
+                  ref="titleAnimEls"
+                  class="project-title-anim absolute top-0 left-0 w-full inline-block pb-[0.22em] pointer-events-none"
+                  aria-hidden="true"
+                  >{{ project.title }}</span
+                >
               </span>
-              <span ref="lottieEls" class="project-title-lottie w-[3em] h-[3em] pointer-events-none opacity-0 -ml-[0.7em]" aria-hidden="true"></span>
+              <span
+                ref="lottieEls"
+                class="project-title-lottie w-[3em] h-[3em] pointer-events-none opacity-0 -ml-[0.7em]"
+                aria-hidden="true"
+              ></span>
             </span>
           </h3>
-          <div class="project-tags flex flex-wrap gap-4 items-center -mt-16 pb-4 max-md:-mt-7">
+
+          <div
+            class="project-tags flex flex-wrap gap-4 items-center -mt-16 pb-4 max-md:-mt-7"
+          >
             <span
               v-for="(tag, tagIndex) in project.tags"
               :key="tagIndex"
@@ -75,15 +115,17 @@
 </template>
 
 <script setup>
-import { computed, inject, nextTick, onMounted, onUnmounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import progress1Img from '@/assets/progress1.jpg';
-import progress1ImgSmall from '@/assets/progress1-1280.jpg';
+import { computed, inject, nextTick, onMounted, onUnmounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+
+import screenshot553 from "@/assets/Screenshot (553).png";
+import screenshot554 from "@/assets/Screenshot (554).png";
+import screenshot555 from "@/assets/Screenshot (555).png";
 
 const { t } = useI18n();
 const router = useRouter();
-const startPageTransition = inject('startPageTransition', null);
+const startPageTransition = inject("startPageTransition", null);
 const projectsSection = ref(null);
 const projectItems = ref([]);
 const titleAnimEls = ref([]);
@@ -100,30 +142,46 @@ let lottieLib = null;
 let lottieMediaQuery = null;
 let lottieMediaHandler = null;
 let threadLineDownRightAnim = null;
+let projectsTimeline = null;
+
+// Mouse position tracking for smooth preview movement
+let rafId = null;
+let targetMouseX = 0;
+let targetMouseY = 0;
+
 const resetTitleAnim = (index) => {
   const animEl = titleAnimEls.value[index];
   if (!animEl) return;
-  animEl.classList.add('is-resetting');
-  animEl.style.backgroundSize = '0% 100%';
-  // Force reflow to apply the no-transition state immediately.
+  animEl.classList.add("is-resetting");
+  animEl.style.backgroundSize = "0% 100%";
   void animEl.offsetHeight;
-  animEl.classList.remove('is-resetting');
-  animEl.style.removeProperty('background-size');
+  animEl.classList.remove("is-resetting");
+  animEl.style.removeProperty("background-size");
 };
 
 const projects = computed(() => [
   {
-    id: 1,
-    title: t('projects.jlptLab'),
-    tags: [t('projects.jlptLabSubtitle')],
-    image: progress1Img,
-    imageMobile: progress1ImgSmall,
-    width: 4500,
-    height: 4500
-  }
+    id: "music",
+    title: "Music Scheduler",
+    tags: ["Vue · Node · Express"],
+    image: screenshot553,
+    imageMobile: screenshot553,
+  },
+  {
+    id: "flatmate",
+    title: "Flatmate Finder",
+    tags: ["PostgreSQL · Express · TS"],
+    image: screenshot554,
+    imageMobile: screenshot554,
+  },
+  {
+    id: "restaurant",
+    title: "Restaurant App",
+    tags: ["Full Stack · Admin Panel"],
+    image: screenshot555,
+    imageMobile: screenshot555,
+  },
 ]);
-
-let projectsTimeline = null;
 
 const destroyLottie = () => {
   lottieTimers.forEach((timer) => window.clearTimeout(timer));
@@ -131,7 +189,7 @@ const destroyLottie = () => {
   lottieAnims.forEach((anim, index) => {
     const animEl = titleAnimEls.value[index];
     if (animEl && lottieEndHandlers[index]) {
-      animEl.removeEventListener('transitionend', lottieEndHandlers[index]);
+      animEl.removeEventListener("transitionend", lottieEndHandlers[index]);
     }
     anim?.destroy();
   });
@@ -139,18 +197,18 @@ const destroyLottie = () => {
   lottieEndHandlers.length = 0;
   lottieStarted.length = 0;
   lottieHoldFrames.length = 0;
-  lottieEls.value.forEach((el) => el?.classList.remove('is-playing'));
+  lottieEls.value.forEach((el) => el?.classList.remove("is-playing"));
 };
 
 const initLottie = async () => {
-  if (window.matchMedia('(max-width: 768px)').matches) return;
+  if (window.matchMedia("(max-width: 768px)").matches) return;
   if (lottieAnims.length) return;
   if (!lottieLib) {
-    const module = await import('lottie-web');
+    const module = await import("lottie-web");
     lottieLib = module?.default ?? module;
   }
   if (!threadLineDownRightAnim) {
-    const module = await import('@/assets/lottie/thread-line-down-right.json');
+    const module = await import("@/assets/lottie/thread-line-down-right.json");
     threadLineDownRightAnim = module?.default ?? module;
   }
   await nextTick();
@@ -158,10 +216,10 @@ const initLottie = async () => {
     if (!el) return;
     const anim = lottieLib.loadAnimation({
       container: el,
-      renderer: 'svg',
+      renderer: "svg",
       loop: false,
       autoplay: false,
-      animationData: threadLineDownRightAnim
+      animationData: threadLineDownRightAnim,
     });
     anim.setSpeed(1);
     const totalFrames = Math.max(anim.getDuration(true), 1);
@@ -170,30 +228,47 @@ const initLottie = async () => {
   });
 };
 
+// ✅ Fixed: robust hover detection using getBoundingClientRect per item
 const handleListMouseMove = (event) => {
   if (!projectItems.value.length) return;
+
+  // Move preview with mouse (offset so it doesn't cover the text)
+  if (imagePreview.value && hoveredIndex.value !== null) {
+    const sectionRect = projectsSection.value.getBoundingClientRect();
+    const x = event.clientX - sectionRect.left;
+    const y = event.clientY - sectionRect.top;
+    imagePreview.value.style.left = `${x + 24}px`;
+    imagePreview.value.style.top = `${y - 80}px`;
+  }
 
   const mouseY = event.clientY;
   let targetIndex = null;
 
+  // ✅ Simple, reliable: just check if mouse Y is within each item's bounding box
   for (let i = 0; i < projectItems.value.length; i++) {
     const item = projectItems.value[i];
     if (!item) continue;
     const rect = item.getBoundingClientRect();
-    const dividerY = rect.bottom;
 
-    if (i === 0) {
-      if (mouseY >= rect.top && mouseY < dividerY) {
-        targetIndex = 0;
-        break;
-      }
-    } else {
-      const prevItem = projectItems.value[i - 1];
-      const prevDividerY = prevItem.getBoundingClientRect().bottom;
+    // Add generous padding so hover is easy to trigger
+    if (mouseY >= rect.top - 10 && mouseY <= rect.bottom + 10) {
+      targetIndex = i;
+      break;
+    }
+  }
 
-      if (mouseY >= prevDividerY && (i === projectItems.value.length - 1 || mouseY < dividerY)) {
+  // Fallback: if between items, find the closest one
+  if (targetIndex === null) {
+    let minDist = Infinity;
+    for (let i = 0; i < projectItems.value.length; i++) {
+      const item = projectItems.value[i];
+      if (!item) continue;
+      const rect = item.getBoundingClientRect();
+      const centerY = (rect.top + rect.bottom) / 2;
+      const dist = Math.abs(mouseY - centerY);
+      if (dist < minDist) {
+        minDist = dist;
         targetIndex = i;
-        break;
       }
     }
   }
@@ -207,19 +282,23 @@ const handleTitleEnter = (index) => {
   const prevIndex = hoveredIndex.value;
   hoveredIndex.value = index;
 
-  if (imagePreview.value && projectItems.value[index]) {
-    const item = projectItems.value[index];
-    const itemRect = item.getBoundingClientRect();
+  // ✅ Position preview next to the hovered item initially
+  if (imagePreview.value && projectsSection.value) {
     const sectionRect = projectsSection.value.getBoundingClientRect();
-    const topOffset = itemRect.top - sectionRect.top + itemRect.height / 2;
-    imagePreview.value.style.top = `${topOffset}px`;
+    const item = projectItems.value[index];
+    if (item) {
+      const itemRect = item.getBoundingClientRect();
+      const topOffset =
+        itemRect.top - sectionRect.top + itemRect.height / 2 - 80;
+      imagePreview.value.style.top = `${topOffset}px`;
+    }
   }
 
   if (prevIndex !== null && prevIndex !== index) {
     resetTitleAnim(prevIndex);
     const prevAnim = lottieAnims[prevIndex];
     const prevEl = lottieEls.value[prevIndex];
-    if (prevEl) prevEl.classList.remove('is-playing');
+    if (prevEl) prevEl.classList.remove("is-playing");
     if (prevAnim) {
       prevAnim.stop();
       prevAnim.goToAndStop(0, true);
@@ -231,16 +310,17 @@ const handleTitleEnter = (index) => {
   const animEl = titleAnimEls.value[index];
   if (!anim || !animEl) return;
   lottieStarted[index] = false;
-  if (el) el.classList.add('is-playing');
+  if (el) el.classList.add("is-playing");
 
   if (lottieEndHandlers[index]) {
-    animEl.removeEventListener('transitionend', lottieEndHandlers[index]);
+    animEl.removeEventListener("transitionend", lottieEndHandlers[index]);
   }
 
   const startAnim = () => {
     if (lottieStarted[index]) return;
     lottieStarted[index] = true;
-    const holdFrame = lottieHoldFrames[index] || Math.max(anim.getDuration(true) - 1, 0);
+    const holdFrame =
+      lottieHoldFrames[index] || Math.max(anim.getDuration(true) - 1, 0);
     anim.playSegments([0, holdFrame], true);
   };
 
@@ -248,20 +328,23 @@ const handleTitleEnter = (index) => {
   const toMs = (value) => {
     const parsed = parseFloat(value);
     if (Number.isNaN(parsed)) return 0;
-    return value.includes('ms') ? parsed : parsed * 1000;
+    return value.includes("ms") ? parsed : parsed * 1000;
   };
-  const totalDelay = toMs(styles.transitionDuration) + toMs(styles.transitionDelay);
+  const totalDelay =
+    toMs(styles.transitionDuration) + toMs(styles.transitionDelay);
   const startDelay = totalDelay * 0.35;
 
   window.clearTimeout(lottieTimers[index]);
   lottieTimers[index] = window.setTimeout(startAnim, startDelay);
 
   lottieEndHandlers[index] = (event) => {
-    if (event.propertyName !== 'background-size') return;
+    if (event.propertyName !== "background-size") return;
     startAnim();
   };
 
-  animEl.addEventListener('transitionend', lottieEndHandlers[index], { once: true });
+  animEl.addEventListener("transitionend", lottieEndHandlers[index], {
+    once: true,
+  });
 };
 
 const handleListLeave = () => {
@@ -276,10 +359,10 @@ const handleListLeave = () => {
   const animEl = titleAnimEls.value[index];
   resetTitleAnim(index);
   if (animEl && lottieEndHandlers[index]) {
-    animEl.removeEventListener('transitionend', lottieEndHandlers[index]);
+    animEl.removeEventListener("transitionend", lottieEndHandlers[index]);
   }
   lottieStarted[index] = false;
-  if (el) el.classList.remove('is-playing');
+  if (el) el.classList.remove("is-playing");
   if (!anim) return;
   anim.stop();
   anim.goToAndStop(0, true);
@@ -287,9 +370,11 @@ const handleListLeave = () => {
 
 const goToProject = (project) => {
   if (!project) return;
-  const fromSection = projectsSection.value?.id || "projects";
   const navigate = () => {
-    router.push({ name: "project-progress", query: { from: fromSection } });
+    router.push({
+      name: "project-progress",
+      query: { project: project.id },
+    });
   };
   if (startPageTransition) {
     startPageTransition(navigate);
@@ -300,52 +385,38 @@ const goToProject = (project) => {
 
 onMounted(async () => {
   const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
-    import('gsap'),
-    import('gsap/ScrollTrigger'),
+    import("gsap"),
+    import("gsap/ScrollTrigger"),
   ]);
   gsap.registerPlugin(ScrollTrigger);
 
   const sectionEl = projectsSection.value;
   if (!sectionEl) return;
 
-  const items = sectionEl.querySelectorAll('.project-item');
+  const items = sectionEl.querySelectorAll(".project-item");
   if (!items.length) return;
   const [firstItem, ...restItems] = Array.from(items);
 
-  gsap.set(firstItem, {
-    opacity: 0,
-    y: 60
-  });
-
-  gsap.set(restItems, {
-    opacity: 0,
-    y: 30
-  });
+  gsap.set(firstItem, { opacity: 0, y: 60 });
+  gsap.set(restItems, { opacity: 0, y: 30 });
 
   projectsTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: sectionEl,
-      start: 'top 60%',
-      toggleActions: 'play none none none'
-    }
+      start: "top 60%",
+      toggleActions: "play none none none",
+    },
   });
 
   projectsTimeline
-    .to(firstItem, {
-      opacity: 1,
-      y: 0,
-      duration: 0.9,
-      ease: 'power3.out'
-    })
-    .to(restItems, {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      stagger: 0.15
-    }, '-=0.2');
+    .to(firstItem, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" })
+    .to(
+      restItems,
+      { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.15 },
+      "-=0.2",
+    );
 
-  lottieMediaQuery = window.matchMedia('(max-width: 768px)');
+  lottieMediaQuery = window.matchMedia("(max-width: 768px)");
   lottieMediaHandler = (event) => {
     if (event.matches) {
       destroyLottie();
@@ -354,7 +425,7 @@ onMounted(async () => {
     }
   };
   if (lottieMediaQuery.addEventListener) {
-    lottieMediaQuery.addEventListener('change', lottieMediaHandler);
+    lottieMediaQuery.addEventListener("change", lottieMediaHandler);
   } else {
     lottieMediaQuery.addListener(lottieMediaHandler);
   }
@@ -362,15 +433,15 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+  if (rafId) cancelAnimationFrame(rafId);
   if (projectsTimeline) {
     if (projectsTimeline.scrollTrigger) projectsTimeline.scrollTrigger.kill();
     projectsTimeline.kill();
     projectsTimeline = null;
   }
-
   if (lottieMediaQuery && lottieMediaHandler) {
     if (lottieMediaQuery.removeEventListener) {
-      lottieMediaQuery.removeEventListener('change', lottieMediaHandler);
+      lottieMediaQuery.removeEventListener("change", lottieMediaHandler);
     } else {
       lottieMediaQuery.removeListener(lottieMediaHandler);
     }
@@ -386,18 +457,33 @@ onUnmounted(() => {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.project-item:nth-child(1) { z-index: 3; }
-.project-item:nth-child(2) { z-index: 2; }
-.project-item:nth-child(3) { z-index: 1; }
-.project-item.is-hovered { z-index: 20; }
-.project-item-first { margin-top: 0; }
-.project-item:last-child { border-bottom: none; }
+/* =====================
+   Project Items
+   ===================== */
+.project-item:nth-child(1) {
+  z-index: 3;
+}
+.project-item:nth-child(2) {
+  z-index: 2;
+}
+.project-item:nth-child(3) {
+  z-index: 1;
+}
+.project-item.is-hovered {
+  z-index: 20;
+}
+.project-item-first {
+  margin-top: 0;
+}
+.project-item:last-child {
+  border-bottom: none;
+}
 
 .project-index {
   font-size: clamp(0.875rem, 1.5vw, 1rem);
   width: 4ch;
   margin-right: 1.2em;
-  transform: translateY(-1.40em);
+  transform: translateY(-1.4em);
 }
 
 .project-index-mobile {
@@ -428,7 +514,12 @@ onUnmounted(() => {
 }
 
 .project-title-base {
-  background: linear-gradient(to bottom, var(--theme-headline-from), var(--theme-headline-via), var(--theme-headline-to));
+  background: linear-gradient(
+    to bottom,
+    var(--theme-headline-from),
+    var(--theme-headline-via),
+    var(--theme-headline-to)
+  );
   color: transparent;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -439,7 +530,11 @@ onUnmounted(() => {
 
 .project-title-anim {
   line-height: inherit;
-  background-image: linear-gradient(90deg, var(--project-hover-color), var(--project-hover-color));
+  background-image: linear-gradient(
+    90deg,
+    var(--project-hover-color),
+    var(--project-hover-color)
+  );
   background-size: 0% 100%;
   background-repeat: no-repeat;
   background-position: left center;
@@ -461,7 +556,9 @@ onUnmounted(() => {
 
 .project-title-lottie {
   transform: translateY(0.28em);
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
   will-change: opacity, transform;
 }
 
@@ -490,7 +587,7 @@ onUnmounted(() => {
 }
 
 .project-tag:not(:last-child)::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -0.55rem;
   top: 50%;
@@ -501,31 +598,96 @@ onUnmounted(() => {
   background: var(--project-dot-color);
 }
 
+/* =====================
+   ✅ Upgraded Image Preview
+   ===================== */
 .project-image-preview {
-  right: clamp(1rem, 5vw, 4rem);
-  transform: translateX(1.75rem) translateY(-50%) skewX(-8deg) scale(0.85);
-  transform-origin: right center;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  /* ✅ Now follows mouse via JS-set left/top instead of fixed right */
+  width: 320px;
+  height: 220px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.92) skewX(-4deg);
+  transform-origin: top left;
+  transition:
+    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity, left, top;
 }
 
 .project-image-preview.is-visible {
   opacity: 1;
-  transform: translateX(1.75rem) translateY(-50%) skewX(-8deg) scale(1);
+  transform: translateY(0) scale(1) skewX(-4deg);
 }
 
-.project-image-preview img.is-active {
+.preview-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.08) inset,
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* ✅ Browser chrome bar at top for screenshot authenticity */
+.browser-chrome {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: rgba(30, 30, 30, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chrome-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.chrome-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.chrome-dots span:nth-child(1) {
+  background: #ff5f57;
+}
+.chrome-dots span:nth-child(2) {
+  background: #febc2e;
+}
+.chrome-dots span:nth-child(3) {
+  background: #28c840;
+}
+
+/* ✅ Screenshot images start from below the chrome bar */
+.preview-img {
+  top: 28px !important;
+  height: calc(100% - 28px) !important;
+}
+
+.preview-img.is-active {
   opacity: 1;
 }
 
+/* =====================
+   Theme Variables
+   ===================== */
 :global([data-theme="dark"]) {
   --project-border-color: rgba(255, 255, 255, 0.15);
   --project-title-color: #f2f0ea;
   --project-meta-color: rgba(242, 240, 234, 0.7);
   --project-dot-color: rgba(242, 240, 234, 0.5);
-  --project-hover-color: #354F52;
+  --project-hover-color: #354f52;
   --project-image-overlay: rgba(0, 0, 0, 0.15);
 }
 
@@ -534,7 +696,7 @@ onUnmounted(() => {
   --project-title-color: var(--theme-text-strong);
   --project-meta-color: var(--theme-text-muted);
   --project-dot-color: var(--theme-text-soft);
-  --project-hover-color: #18969E;
+  --project-hover-color: #18969e;
   --project-image-overlay: rgba(255, 255, 255, 0.1);
 }
 
@@ -546,10 +708,13 @@ onUnmounted(() => {
   --project-hover-color: #9c6a4b;
 }
 
+/* =====================
+   Responsive
+   ===================== */
 @media (max-width: 1024px) {
   .project-image-preview {
     width: 260px;
-    height: 210px;
+    height: 185px;
   }
 }
 
@@ -579,7 +744,6 @@ onUnmounted(() => {
   .project-item-first {
     margin-top: 0;
   }
-
   .project-item:last-child {
     margin-bottom: 1.5rem;
   }
@@ -598,6 +762,7 @@ onUnmounted(() => {
     padding-left: 2rem;
   }
 
+  /* Hide floating preview on mobile — mobile images show inline instead */
   .project-image-preview {
     display: none;
   }
@@ -609,7 +774,6 @@ onUnmounted(() => {
   .project-title-anim {
     transition: none;
   }
-
   .projects-divider {
     display: none;
   }
@@ -619,13 +783,8 @@ onUnmounted(() => {
   .project-item {
     margin-bottom: 2rem;
   }
-
   .project-mobile-image {
     margin-bottom: 0.5rem;
   }
 }
 </style>
-
-
-
-
