@@ -3,7 +3,6 @@
     <section
       ref="contactSection"
       class="contact-section relative min-h-screen overflow-hidden is-offscreen"
-      :class="isJa ? 'is-ja' : ''"
     >
       <div class="contact-bg absolute inset-0 z-0" aria-hidden="true">
         <img :src="contactBgImage" alt="" class="contact-bg-image" />
@@ -31,13 +30,7 @@
             <h3 class="contact-success-title">
               {{ t("contact.successTitle") }}
             </h3>
-            <p v-if="isJa" class="contact-success-message">
-              {{ t("contact.successMessageLine1")
-              }}<br class="ja-mobile-break" />{{
-                t("contact.successMessageLine2")
-              }}
-            </p>
-            <p v-else class="contact-success-message">
+            <p class="contact-success-message">
               {{ t("contact.successMessage") }}
             </p>
           </div>
@@ -49,17 +42,10 @@
               ref="formRef"
               class="contact-form"
               name="contact"
-              method="POST"
               novalidate
-              data-netlify="true"
-              netlify-honeypot="bot-field"
               @submit.prevent="handleSubmit"
             >
-              <input type="hidden" name="form-name" value="contact" />
               <!-- Honeypot fields for bot detection -->
-              <p style="display: none">
-                <label>Don't fill this out: <input name="bot-field" /></label>
-              </p>
               <input
                 type="text"
                 name="website"
@@ -68,6 +54,7 @@
                 autocomplete="off"
               />
               <input type="hidden" name="_gotcha" />
+
               <label class="contact-field">
                 <span class="contact-label">{{ t("contact.nameLabel") }}</span>
                 <input
@@ -94,6 +81,7 @@
                   <span>{{ errors.name }}</span>
                 </p>
               </label>
+
               <label class="contact-field">
                 <span class="contact-label">{{ t("contact.emailLabel") }}</span>
                 <input
@@ -133,6 +121,7 @@
                   <span>{{ emailWarning }}</span>
                 </p>
               </label>
+
               <label class="contact-field">
                 <span class="contact-label">{{
                   t("contact.messageLabel")
@@ -160,6 +149,7 @@
                   <span>{{ errors.message }}</span>
                 </p>
               </label>
+
               <button
                 class="contact-submit"
                 type="submit"
@@ -178,16 +168,14 @@
 </template>
 
 <script setup>
-import {
-  computed,
-  nextTick,
-  onMounted,
-  onBeforeUnmount,
-  ref,
-  watch,
-} from "vue";
+import { nextTick, onMounted, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import contactBgImage from "@/assets/contact-bg.jpg";
+
+// ✅ EmailJS credentials
+const EMAILJS_SERVICE_ID = "service_xdlnj5k";
+const EMAILJS_TEMPLATE_ID = "template_vjccnfo";
+const EMAILJS_PUBLIC_KEY = "vPH1b-LRjyIp49uod";
 
 const contactWrapper = ref(null);
 const contactSection = ref(null);
@@ -196,27 +184,11 @@ const formRef = ref(null);
 const emailInputRef = ref(null);
 const { t, locale } = useI18n();
 let successLottieAnim = null;
-const isJa = computed(() => locale.value === "ja");
 
-const formState = ref({
-  name: "",
-  email: "",
-  message: "",
-});
-
-const touched = ref({
-  name: false,
-  email: false,
-  message: false,
-});
-
-const errors = ref({
-  name: "",
-  email: "",
-  message: "",
-});
+const formState = ref({ name: "", email: "", message: "" });
+const touched = ref({ name: false, email: false, message: false });
+const errors = ref({ name: "", email: "", message: "" });
 const emailWarning = ref("");
-
 const isSubmitting = ref(false);
 const formSubmitted = ref(false);
 const formLoadTime = ref(Date.now());
@@ -231,21 +203,9 @@ let isWrapperVisible = false;
 let wasWrapperVisible = false;
 
 const resetForm = () => {
-  formState.value = {
-    name: "",
-    email: "",
-    message: "",
-  };
-  touched.value = {
-    name: false,
-    email: false,
-    message: false,
-  };
-  errors.value = {
-    name: "",
-    email: "",
-    message: "",
-  };
+  formState.value = { name: "", email: "", message: "" };
+  touched.value = { name: false, email: false, message: false };
+  errors.value = { name: "", email: "", message: "" };
   emailWarning.value = "";
 };
 
@@ -261,14 +221,6 @@ const trustedEmailDomains = [
   "zoho.com",
   "mail.com",
   "fastmail.com",
-  "yahoo.co.jp",
-  "docomo.ne.jp",
-  "ezweb.ne.jp",
-  "au.com",
-  "softbank.ne.jp",
-  "i.softbank.jp",
-  "ymobile.ne.jp",
-  "ymobile.jp",
 ];
 const domainTypoMap = {
   "gamil.com": "gmail.com",
@@ -285,11 +237,6 @@ const domainTypoMap = {
   "yaho.com": "yahoo.com",
   "yahho.com": "yahoo.com",
   "yhoo.com": "yahoo.com",
-  "yahoo.coj.jp": "yahoo.co.jp",
-  "docomo.ne,jp": "docomo.ne.jp",
-  "ezweb.ne,jp": "ezweb.ne.jp",
-  "softbank.ne,jp": "softbank.ne.jp",
-  "ymobile.ne,jp": "ymobile.ne.jp",
 };
 
 const getEmailParts = (email) => {
@@ -307,11 +254,9 @@ const levenshteinDistance = (a, b) => {
   if (a === b) return 0;
   if (!a.length) return b.length;
   if (!b.length) return a.length;
-
   const prev = new Array(b.length + 1);
   const curr = new Array(b.length + 1);
   for (let j = 0; j <= b.length; j += 1) prev[j] = j;
-
   for (let i = 1; i <= a.length; i += 1) {
     curr[0] = i;
     for (let j = 1; j <= b.length; j += 1) {
@@ -320,7 +265,6 @@ const levenshteinDistance = (a, b) => {
     }
     for (let j = 0; j <= b.length; j += 1) prev[j] = curr[j];
   }
-
   return prev[b.length];
 };
 
@@ -328,28 +272,22 @@ const getSuggestedDomain = (domain) => {
   if (!domain) return "";
   if (trustedEmailDomains.includes(domain)) return "";
   if (domainTypoMap[domain]) return domainTypoMap[domain];
-
   const domainLabels = domain.split(".").length;
   let bestDomain = "";
   let bestDistance = Number.POSITIVE_INFINITY;
-
   for (const candidate of trustedEmailDomains) {
     const candidateLabels = candidate.split(".").length;
     if (Math.abs(candidateLabels - domainLabels) > 1) continue;
-
     const distance = levenshteinDistance(domain, candidate);
     if (distance < bestDistance) {
       bestDistance = distance;
       bestDomain = candidate;
     }
   }
-
   if (!bestDomain) return "";
-
   const maxLength = Math.max(domain.length, bestDomain.length);
   const normalized = bestDistance / maxLength;
   if (bestDistance <= 2 && normalized <= 0.25) return bestDomain;
-
   return "";
 };
 
@@ -359,7 +297,6 @@ const updateEmailWarning = () => {
     emailWarning.value = "";
     return;
   }
-
   const emailEl = emailInputRef.value;
   if (
     !emailEl ||
@@ -370,7 +307,6 @@ const updateEmailWarning = () => {
     emailWarning.value = "";
     return;
   }
-
   const { domain } = getEmailParts(email);
   const suggestedDomain = getSuggestedDomain(domain);
   emailWarning.value = suggestedDomain
@@ -380,11 +316,7 @@ const updateEmailWarning = () => {
 
 const getFieldError = (field) => {
   const value = formState.value[field];
-
-  if (field === "name" && !value) {
-    return t("contact.errors.nameRequired");
-  }
-
+  if (field === "name" && !value) return t("contact.errors.nameRequired");
   if (field === "email") {
     const emailEl = emailInputRef.value;
     if (!emailEl) {
@@ -392,33 +324,22 @@ const getFieldError = (field) => {
         ? t("contact.errors.emailInvalid")
         : "";
     }
-
-    // Level 1: HTML5 checks from `type="email"` + `required`.
     if (emailEl.validity.valueMissing || emailEl.validity.typeMismatch) {
       return t("contact.errors.emailInvalid");
     }
-
-    // Level 2: practical JS check for obvious structural issues.
     if (!practicalEmailPattern.test(value)) {
       return t("contact.errors.emailInvalid");
     }
   }
-
-  if (field === "message" && !value) {
-    return t("contact.errors.messageRequired");
-  }
-
+  if (field === "message" && !value) return t("contact.errors.messageRequired");
   return "";
 };
 
 const validateField = (field) => {
   errors.value[field] = getFieldError(field);
   if (field === "email") {
-    if (errors.value.email) {
-      emailWarning.value = "";
-    } else {
-      updateEmailWarning();
-    }
+    if (errors.value.email) emailWarning.value = "";
+    else updateEmailWarning();
   }
   return !errors.value[field];
 };
@@ -444,16 +365,10 @@ const handleBlur = (field) => {
 };
 
 const handleInput = (field) => {
-  if (field === "email") {
-    // Warning is non-blocking and should clear/update as the user types.
-    updateEmailWarning();
-  }
-  if (touched.value[field] || errors.value[field]) {
-    validateField(field);
-  }
+  if (field === "email") updateEmailWarning();
+  if (touched.value[field] || errors.value[field]) validateField(field);
 };
 
-// Spam pattern detection
 const containsSpamPatterns = (text) => {
   const spamPatterns = [
     /\[url=/i,
@@ -470,8 +385,6 @@ const handleSubmit = async () => {
   const now = Date.now();
 
   if (!validateForm()) return;
-
-  // Prevent double submission
   if (isSubmitting.value) return;
 
   // Rate limiting - minimum 10 seconds between submissions
@@ -500,7 +413,6 @@ const handleSubmit = async () => {
   const websiteField = formEl?.querySelector('input[name="website"]');
   const gotchaField = formEl?.querySelector('input[name="_gotcha"]');
   if (websiteField?.value || gotchaField?.value) {
-    // Silent fail for bots
     resetForm();
     alert("Thank you for your message!");
     return;
@@ -508,27 +420,15 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true;
 
-  const formData = new URLSearchParams();
-  formData.append("form-name", "contact");
-  formData.append("name", name);
-  formData.append("email", email);
-  formData.append("message", message);
-
   try {
-    const response = await fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
-    });
-
-    if (!response.ok) {
-      console.error(
-        "Form submission failed:",
-        response.status,
-        response.statusText,
-      );
-      throw new Error("Submission failed");
-    }
+    // ✅ EmailJS send
+    const emailjs = await import("@emailjs/browser");
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      { name, email, message },
+      EMAILJS_PUBLIC_KEY,
+    );
 
     lastSubmitTime = Date.now();
     resetForm();
@@ -541,9 +441,7 @@ const handleSubmit = async () => {
     ]);
     const workAnimData = workAnimModule.default ?? workAnimModule;
 
-    // Show success state after Lottie is preloaded
     formSubmitted.value = true;
-
     await nextTick();
 
     if (lottieContainer.value) {
@@ -556,7 +454,7 @@ const handleSubmit = async () => {
       });
     }
   } catch (error) {
-    console.error("Form error:", error);
+    console.error("EmailJS error:", error);
     alert("There was an error sending your message. Please try again.");
   } finally {
     isSubmitting.value = false;
@@ -581,8 +479,6 @@ onMounted(async () => {
   const isMobileLayout = window.matchMedia("(max-width: 768px)").matches;
 
   if (isMobileLayout) {
-    // On small screens locale/menu toggles can leave this class stale until scroll.
-    // Keep the section visible and skip the desktop offscreen observer behavior.
     sectionEl.classList.remove("is-offscreen");
     isWrapperVisible = true;
     wasWrapperVisible = true;
@@ -619,7 +515,6 @@ onMounted(async () => {
         },
       },
     );
-
     return () => {
       if (revealTween) {
         revealTween.kill();
@@ -643,7 +538,6 @@ onMounted(async () => {
         invalidateOnRefresh: true,
       },
     });
-
     return () => {
       if (exitTween) {
         exitTween.kill();
@@ -654,7 +548,6 @@ onMounted(async () => {
   };
 
   if (isMobileLayout) {
-    // Keep mobile stable: avoid clip-path scrub that can stick after locale toggle.
     gsap.set(sectionEl, { clipPath: "inset(0% 0 0 0)" });
   } else {
     mediaMatch = ScrollTrigger.matchMedia();
@@ -665,7 +558,6 @@ onMounted(async () => {
         () => `top+=${window.innerHeight}px bottom`,
       );
       const killExit = createExitScroll();
-
       return () => {
         killReveal?.();
         killExit?.();
@@ -682,7 +574,6 @@ watch(locale, async () => {
   if (!window.matchMedia("(max-width: 768px)").matches) return;
   const sectionEl = contactSection.value;
   if (!sectionEl) return;
-
   await nextTick();
   sectionEl.classList.remove("is-offscreen");
   sectionEl.style.removeProperty("clip-path");
@@ -692,12 +583,10 @@ watch(locale, async () => {
 
 onBeforeUnmount(() => {
   mountToken += 1;
-
   if (wrapperObserver) {
     wrapperObserver.disconnect();
     wrapperObserver = null;
   }
-
   if (revealTween) {
     revealTween.kill();
     revealTween = null;
@@ -714,7 +603,6 @@ onBeforeUnmount(() => {
     successLottieAnim.destroy();
     successLottieAnim = null;
   }
-
   isWrapperVisible = false;
   wasWrapperVisible = false;
   document.documentElement.style.scrollBehavior = "";
@@ -770,7 +658,6 @@ onBeforeUnmount(() => {
   mix-blend-mode: screen;
 }
 
-/* Split layout */
 .contact-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -846,10 +733,6 @@ onBeforeUnmount(() => {
   max-width: 380px;
   word-break: keep-all;
   overflow-wrap: normal;
-}
-
-.ja-mobile-break {
-  display: none;
 }
 
 .contact-title {
@@ -975,7 +858,6 @@ onBeforeUnmount(() => {
   height: 50px;
   margin: 5px;
   width: 120px;
-  background: #333;
   justify-self: center;
   margin-top: 0.5rem;
   cursor: pointer;
@@ -1018,7 +900,6 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
-/* Light theme button styling */
 :global([data-theme="light"] .contact-submit) {
   color: #1f2a37;
   border-color: rgba(31, 42, 55, 0.22);
@@ -1056,7 +937,6 @@ onBeforeUnmount(() => {
     inset 2px 2px 6px rgba(12, 74, 110, 0.18);
 }
 
-/* Theme variables */
 :global([data-theme="dark"]) {
   --contact-overlay: linear-gradient(
     140deg,
@@ -1120,7 +1000,6 @@ onBeforeUnmount(() => {
   --contact-input-focus: rgba(186, 128, 255, 0.8);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .contact-wrapper {
     height: auto;
@@ -1171,7 +1050,9 @@ onBeforeUnmount(() => {
   }
 
   .contact-success-title {
-    max-width: 22ch;
+    max-width: none;
+    white-space: nowrap;
+    font-size: clamp(1.05rem, 4.8vw, 1.5rem);
   }
 
   .contact-success-message {
@@ -1186,72 +1067,8 @@ onBeforeUnmount(() => {
     margin-bottom: 0.5rem;
   }
 
-  .contact-section:not(.is-ja) .contact-success-title {
-    max-width: none;
-    white-space: nowrap;
-    font-size: clamp(1.05rem, 4.8vw, 1.5rem);
-  }
-
   .contact-submit {
     justify-self: center;
-  }
-
-  .contact-section.is-ja .contact-left {
-    padding: 1.5rem 1rem 1rem;
-  }
-
-  .contact-section.is-ja .contact-left-content {
-    padding: 1.5rem 0.5rem 1rem;
-  }
-
-  .contact-section.is-ja .contact-right {
-    padding: 1.5rem 1rem 2rem;
-  }
-
-  .contact-section.is-ja .contact-form-wrapper {
-    padding: 1.5rem 0.5rem 2rem;
-    margin: 0 auto;
-  }
-
-  .contact-section.is-ja .contact-success-wrapper {
-    padding: 0;
-    margin: 0 auto;
-    justify-items: center;
-    text-align: center;
-  }
-
-  .contact-section.is-ja .contact-success-title {
-    font-size: clamp(1.05rem, 4.7vw, 1.35rem);
-    line-height: 1.3;
-    white-space: nowrap;
-    width: fit-content;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
-
-  .contact-section.is-ja .contact-success-message {
-    white-space: normal;
-    word-break: keep-all;
-    overflow-wrap: normal;
-    width: fit-content;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
-
-  .contact-section.is-ja .ja-mobile-break {
-    display: block;
-  }
-
-  .contact-section.is-ja .contact-title--stacked {
-    font-size: clamp(2rem, 7.5vw, 3rem);
-  }
-
-  .contact-section.is-ja .contact-subtitle {
-    font-size: 0.95rem;
   }
 }
 </style>
